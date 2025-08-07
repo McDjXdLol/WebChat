@@ -30,7 +30,7 @@ class Bot:
         return msg.startswith(self.prefix)
 
     def cmd_image(self, msg: str, **kwargs) -> str:
-        return f'<img id="modalImg" src="{msg[len("!img "):].strip()}" alt="Zoomed Image"/>'
+        return f'<img id="modalImg" src="{msg[len("!img "):].strip()}" alt="Image"/>'
 
     def cmd_info(self, msg: str, **kwargs) -> str:
         return self.replies.get(msg[1:], "No info available.")

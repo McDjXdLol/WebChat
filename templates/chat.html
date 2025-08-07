@@ -15,19 +15,15 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0d1117;
-            /* Jeszcze ciemniejsze tło */
             color: #c9d1d9;
-            /* Jasny tekst */
         }
 
-        /* Dodatkowe style dla przewijania */
         #chat {
             height: 60vh;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
 
-        /* Styl dla paska przewijania w WebKit (Chrome, Safari) */
         #chat::-webkit-scrollbar {
             width: 8px;
         }
@@ -48,8 +44,20 @@
     <div
         class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-4xl mx-auto border border-[#30363d] flex flex-col h-[90vh]">
 
-        <h2 class="text-3xl font-extrabold text-[#58a6ff] mb-4 text-center">Welcome, <span id="user"></span>!</h2>
-
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
+            <div class="flex items-center space-x-2 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-users-2 text-[#c9d1d9]">
+                    <path d="M14 19a6 6 0 0 0-12 0" />
+                    <circle cx="8" cy="9" r="4" />
+                    <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6" />
+                    <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                </svg>
+                <span id="online-users-count" class="font-bold text-lg">0</span>
+            </div>
+        </div>
         <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
 
         <div class="flex items-center space-x-2">
@@ -69,6 +77,11 @@
             socket.emit('register_user', {
                 username: "{{ username }}"
             });
+            socket.emit('user_count');
+        });
+        socket.on('update_users_online', (data) => {
+            const onlineUsersSpan = document.getElementById('online-users-count');
+            onlineUsersSpan.innerText = data.count;
         });
 
         socket.on('nickname_taken', () => {
@@ -84,16 +97,13 @@
         const sendBtn = document.getElementById('send');
         const userSpan = document.getElementById('user');
 
-        // Pobieranie parametrów z URL
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('username') || 'anonim';
         const usercolor = urlParams.get('color') || '#c9d1d9';
 
-        // Ustawienie nicku i koloru
         userSpan.innerText = username;
         userSpan.style.color = usercolor;
 
-        // Obsługa wysyłania wiadomości
         sendBtn.onclick = () => {
             const msg = input.value.trim();
             if (!msg) return;
@@ -101,18 +111,15 @@
             input.value = '';
         };
 
-        // Obsługa odbierania wiadomości
         socket.on('receive_message', (data) => {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('flex', 'items-start', 'space-x-3');
 
-            // Tworzenie awatara
             const avatar = document.createElement('div');
             avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-sm', 'flex-shrink-0');
             avatar.style.backgroundColor = data.color;
             avatar.innerText = data.username.charAt(0).toUpperCase();
 
-            // Tworzenie treści wiadomości
             const messageContent = document.createElement('div');
             messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
 
@@ -134,7 +141,7 @@
 
             const messageText = document.createElement('p');
             messageText.classList.add('text-sm');
-            if (!data.text.startsWith("<img")){
+            if (!data.text.startsWith("<img")) {
                 messageText.innerText = data.text;
             } else {
                 messageText.innerHTML = data.text;
@@ -150,7 +157,6 @@
             chat.scrollTop = chat.scrollHeight;
         });
 
-        // Obsługa wysyłania wiadomości przez Enter
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendBtn.click();
         });

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_socketio import SocketIO, emit, disconnect
+
 from bot import Bot
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ sid_to_nickname = {}  # {sid: nickname}
 messages = []  # [{"datetime": "{datetime}","message": "{msg}","username": "{nick}}"}]
 
 bot = Bot()
+
 
 @app.route('/')
 def home():
@@ -46,6 +48,11 @@ def chat():
 def login():
     error = request.args.get('error')
     return render_template('login.html', error=error)
+
+
+@socketio.on('user_count')
+def handle_user_count():
+    emit('update_users_online', {'count': len(connected_users)}, broadcast=True)
 
 
 @socketio.on('connect')
@@ -81,7 +88,6 @@ def handle_disconnect():
 @socketio.on('send_message')
 def handle_message(data):
     print('Received:', data)
-
 
     emit('receive_message', data, broadcast=True)
 
