@@ -1,8 +1,10 @@
+import os
+
 from flask import Flask, render_template, request, url_for, redirect
 from flask_socketio import SocketIO, emit, disconnect
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback')
 socketio = SocketIO(app)
 
 connected_users = {}  # {nickname: sid}
@@ -12,6 +14,11 @@ sid_to_nickname = {}  # {sid: nickname}
 @app.route('/')
 def home():
     return render_template("index.html")
+
+
+@app.route('/healthz')
+def healthz():
+    return "OK", 200
 
 
 @app.route('/chat')
