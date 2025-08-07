@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging in - Chat web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117; /* Jeszcze ciemniejsze tło */
+            color: #c9d1d9; /* Jasny tekst */
+        }
+        /* Styl dla inputu typu color, żeby wyglądał spójnie */
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: none;
+            background: none;
+            height: 38px; /* Ustawienie wysokości pasującej do innych inputów */
+            width: 100%;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border-radius: 8px; /* Lekko zaokrąglone rogi */
+            border: 2px solid #30363d;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+<div class="bg-[#161b22] rounded-2xl shadow-xl p-8 md:p-12 text-center max-w-3xl mx-auto border border-[#30363d] h-[500px] w-[600px] flex flex-col justify-center">
+
+    <h1 class="text-4xl md:text-5xl font-extrabold text-[#58a6ff] mb-6">Login</h1>
+
+    <form id="loginForm" class="space-y-4">
+        <div>
+            <label for="username" class="block text-left mb-2 text-gray-400">Nickname:</label>
+            <input type="text" id="username" required
+                   class="w-full bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
+        </div>
+
+        <div>
+            <label for="color" class="block text-left mb-2 text-gray-400">Color:</label>
+            <div class="bg-[#21262d] border border-[#30363d] rounded-xl flex items-center p-2.5 focus-within:border-[#58a6ff] transition-colors">
+                <input type="color" id="color" value="#a0a0ff" class="flex-1">
+            </div>
+        </div>
+
+        <div id="errorMessage" class="text-red-400 text-sm mt-4 hidden"></div>
+
+        <button type="submit" class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 rounded-xl border border-[#30363d] shadow-lg
+                       hover:bg-[#30363d] transition-colors duration-300">
+            Enter chat!
+        </button>
+    </form>
+    <div class="text-red-400 text-sm mt-4">
+        ‎
+        {% if error == 'nickname' %}
+        This nickname is already used. Try other one.
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+    const form = document.getElementById('loginForm');
+    const errorMessageDiv = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const color = document.getElementById('color').value;
+
+        if (!username) {
+            errorMessageDiv.innerText = 'Enter nickname!';
+            errorMessageDiv.classList.remove('hidden');
+            return;
+        }
+        errorMessageDiv.classList.add('hidden');
+
+        // Przekieruj z parametrami w URL
+        window.location.href = `/chat?username=${encodeURIComponent(username)}&color=${encodeURIComponent(color)}`;
+    });
+</script>
+</body>
+</html>
