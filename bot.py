@@ -1,6 +1,7 @@
 import datetime
 import random
 from typing import Optional, Callable
+
 from files import Files
 
 
@@ -29,7 +30,8 @@ class Bot:
     def is_command(self, msg: str) -> bool:
         return msg.startswith(self.prefix)
 
-    def cmd_image(self, msg: str, **kwargs) -> str:
+    @staticmethod
+    def cmd_image(msg: str, **kwargs) -> str:
         return f'<img id="modalImg" src="{msg[len("!img "):].strip()}" alt="Image"/>'
 
     def cmd_info(self, msg: str, **kwargs) -> str:
@@ -49,7 +51,8 @@ class Bot:
     def cmd_joke(self, **kwargs) -> str:
         return random.choice(self.jokes)
 
-    def cmd_dice(self, **kwargs) -> str:
+    @staticmethod
+    def cmd_dice(**kwargs) -> str:
         return str(random.randint(1, 6))
 
     def cmd_quote(self, **kwargs) -> str:

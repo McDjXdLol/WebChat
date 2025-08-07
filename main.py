@@ -23,9 +23,14 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/api')
-def api():
+@app.route('/api/messages_history')
+def messages_history():
     return jsonify(messages)
+
+
+@app.route('/api/users_online')
+def users_online():
+    return jsonify({"online_users": list(online_users), "amount": len(online_users)})
 
 
 @app.route('/healthz')
