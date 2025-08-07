@@ -9,6 +9,7 @@ socketio = SocketIO(app)
 
 connected_users = {}  # {nickname: sid}
 sid_to_nickname = {}  # {sid: nickname}
+messages = [] # [user: message]
 
 
 @app.route('/')
@@ -17,7 +18,7 @@ def home():
 
 @app.route('/api')
 def api():
-    return jsonify(sid_to_nickname)
+    return jsonify(messages)
 
 @app.route('/healthz')
 def healthz():
@@ -75,6 +76,7 @@ def handle_disconnect():
 @socketio.on('send_message')
 def handle_message(data):
     print('Received:', data)
+    messages.append({"username": data['username'], "message": data["text"]})
     emit('receive_message', data, broadcast=True)
 
 
