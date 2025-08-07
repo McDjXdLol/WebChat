@@ -18,7 +18,8 @@ class Bot:
             "echo": (self.cmd_echo, "Echo back your message"),
             "joke": (self.cmd_joke, "Tells a random joke"),
             "roll": (self.cmd_dice, "Rolls a dice"),
-            "quote": (self.cmd_quote, "Tells a random quote")
+            "quote": (self.cmd_quote, "Tells a random quote"),
+            "img": (self.cmd_image, "<URL> Displays an image from the provided URL in the chat.")
         }
 
         files = Files()
@@ -27,6 +28,9 @@ class Bot:
 
     def is_command(self, msg: str) -> bool:
         return msg.startswith(self.prefix)
+
+    def cmd_image(self, msg: str, **kwargs) -> str:
+        return f"<img src='{msg[len("!img "):].strip()}'>"
 
     def cmd_info(self, msg: str, **kwargs) -> str:
         return self.replies.get(msg[1:], "No info available.")

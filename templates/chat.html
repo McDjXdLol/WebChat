@@ -126,7 +126,11 @@ console.log("Zalogowano pomyślnie.");
 
         const messageText = document.createElement('p');
         messageText.classList.add('text-sm');
-        messageText.innerText = data.text;
+        if not data.text.startsWith("<img"){
+            messageText.innerText = data.text;
+        } else{
+            messageText.innerHTML = data.text;
+        }
 
         messageContent.appendChild(messageHeader);
         messageContent.appendChild(messageText);
