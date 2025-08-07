@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_socketio import SocketIO, emit, disconnect
 
 app = Flask(__name__)
@@ -15,6 +15,9 @@ sid_to_nickname = {}  # {sid: nickname}
 def home():
     return render_template("index.html")
 
+@app.route('/api')
+def api():
+    return jsonify(sid_to_nickname)
 
 @app.route('/healthz')
 def healthz():
