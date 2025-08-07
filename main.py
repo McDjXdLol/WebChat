@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_socketio import SocketIO, emit, disconnect
@@ -76,7 +77,7 @@ def handle_disconnect():
 @socketio.on('send_message')
 def handle_message(data):
     print('Received:', data)
-    messages.append({"username": data['username'], "message": data["text"]})
+    messages.append({"username": data['username'], "message": data["text"], "datetime": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
     emit('receive_message', data, broadcast=True)
 
 
