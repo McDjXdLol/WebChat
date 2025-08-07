@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_socketio import SocketIO, emit, disconnect
+from bot import Bot
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback')
@@ -10,16 +11,19 @@ socketio = SocketIO(app)
 
 connected_users = {}  # {nickname: sid}
 sid_to_nickname = {}  # {sid: nickname}
-messages = [] # [user: message]
+messages = []  # [{"datetime": "{datetime}","message": "{msg}","username": "{nick}}"}]
 
+bot = Bot()
 
 @app.route('/')
 def home():
     return render_template("index.html")
 
+
 @app.route('/api')
 def api():
     return jsonify(messages)
+
 
 @app.route('/healthz')
 def healthz():
@@ -77,8 +81,23 @@ def handle_disconnect():
 @socketio.on('send_message')
 def handle_message(data):
     print('Received:', data)
-    messages.append({"username": data['username'], "message": data["text"], "datetime": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
+
+
     emit('receive_message', data, broadcast=True)
+
+    messages.append({"message": data["text"], "username": data['username'],
+                     "datetime": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
+    if bot.is_command(data["text"]):
+        response = bot.get_reply(data["text"])
+        if response:
+            emit('receive_message', {
+                'username': 'Bot',
+                'color': '#00ffff',
+                'text': response
+            }, broadcast=True)
+
+        messages.append({"message": response, "username": "Bot",
+                         "datetime": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
 
 
 if __name__ == '__main__':
