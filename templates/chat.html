@@ -2,11 +2,11 @@
 <html lang="pl">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - Chat web</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
             color: #c9d1d9;
         }
 
-        /* Dodatkowe style dla przewijania */
         #chat,
         #users-list-container {
             height: 100%;
@@ -26,7 +25,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Styl dla paska przewijania w WebKit (Chrome, Safari) */
         #chat::-webkit-scrollbar,
         #users-list-container::-webkit-scrollbar {
             width: 8px;
@@ -46,189 +44,225 @@
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen p-4">
-    <!-- Zmieniona struktura, aby dodać panel użytkowników obok czatu -->
-    <div class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto border border-[#30363d] flex h-[90vh]">
-
-        <!-- Kontener na lewo (czat) -->
-        <div class="flex flex-col flex-grow mr-4">
-            <!-- Nagłówek czatu z dynamicznymi danymi z backendu -->
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
-                <div class="flex items-center space-x-2 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-users-2 text-[#c9d1d9]">
-                        <path d="M14 19a6 6 0 0 0-12 0" />
-                        <circle cx="8" cy="9" r="4" />
-                        <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6" />
-                        <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                    </svg>
-                    <span id="online-users-count" class="font-bold text-lg">0</span>
-                </div>
-            </div>
-
-            <!-- Okno czatu -->
-            <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
-
-            <!-- Pole do wpisywania i przycisk wysyłania -->
-            <div class="flex items-center space-x-2">
-                <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
-                    class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
-                <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
-                           hover:bg-[#30363d] transition-colors duration-300">
-                    Send
-                </button>
+<body class="flex items-center justify-center min-h-screen p-4 pb-20">
+<div class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto border border-[#30363d] flex h-[88vh]">
+    <div class="flex flex-col flex-grow mr-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
+            <div class="flex items-center space-x-2 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-users-2 text-[#c9d1d9]">
+                    <path d="M14 19a6 6 0 0 0-12 0"/>
+                    <circle cx="8" cy="9" r="4"/>
+                    <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6"/>
+                    <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                </svg>
+                <span id="online-users-count" class="font-bold text-lg">0</span>
             </div>
         </div>
 
-        <!-- Panel po prawej stronie z listą użytkowników -->
-        <div class="w-64 flex-shrink-0 flex flex-col bg-[#161b22] rounded-xl border border-[#30363d] p-4">
-            <h3 class="text-xl font-bold text-[#c9d1d9] mb-4">Online Users</h3>
-            <div id="users-list-container" class="flex-grow overflow-y-auto">
-                <ul id="online-users-list" class="space-y-2">
-                    <!-- Lista będzie dynamicznie generowana przez JS -->
-                </ul>
-            </div>
+        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
+
+        <div class="flex items-center space-x-2">
+            <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
+                   class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
+            <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
+                           hover:bg-[#30363d] transition-colors duration-300">
+                Send
+            </button>
         </div>
     </div>
 
-    <script>
-        const socket = io();
+    <div class="w-64 flex-shrink-0 flex flex-col bg-[#161b22] rounded-xl border border-[#30363d] p-4">
+        <h3 class="text-xl font-bold text-[#c9d1d9] mb-4">Online Users</h3>
+        <div id="users-list-container" class="flex-grow overflow-y-auto">
+            <ul id="online-users-list" class="space-y-2">
+            </ul>
+        </div>
+    </div>
+</div>
 
-        socket.on('connect', () => {
-            socket.emit('register_user', {
-                username: "{{ username }}"
-            });
-            // Zachowałem Twoje oryginalne wywołanie
-            socket.emit('user_count');
+<footer class="fixed bottom-0 w-full p-4 bg-[#161b22] text-[#c9d1d9] flex justify-center items-center rounded-t-2xl border-t border-[#30363d] shadow-2xl">
+    <a href="{{ url_for('about') }}" class="text-sm">About</a>
+</footer>
+</body>
+<script>
+    const socket = io();
+    socket.on('connect', () => {
+        socket.emit('register_user', {
+            username: "{{ username }}"
         });
+        socket.emit('user_count');
 
-        // Obsługa aktualizacji listy użytkowników i licznika
-        socket.on('update_users_online', (data) => {
-            const onlineUsersSpan = document.getElementById('online-users-count');
-            const onlineUsersList = document.getElementById('online-users-list');
 
-            if (data && data.users) {
-                onlineUsersSpan.innerText = data.users.length;
-                onlineUsersList.innerHTML = '';
-                data.users.forEach(user => {
-                    const listItem = document.createElement('li');
-                    listItem.classList.add('flex', 'items-center', 'space-x-2', 'p-2', 'rounded-md', 'bg-[#21262d]');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('flex', 'items-start', 'space-x-3');
 
-                    const avatar = document.createElement('div');
-                    avatar.classList.add('w-6', 'h-6', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-xs', 'flex-shrink-0');
-                    const userColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-                    avatar.style.backgroundColor = userColor;
-                    avatar.innerText = user.charAt(0).toUpperCase();
+        const avatar = document.createElement('img');
+        avatar.classList.add('w-8', 'h-8', 'rounded-full', 'object-cover', 'flex-shrink-0');
+        avatar.src = '/static/images/info.png';
+        avatar.alt = 'User avatar';
 
-                    const usernameSpan = document.createElement('span');
-                    usernameSpan.classList.add('font-medium', 'text-sm');
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
+
+        const messageHeader = document.createElement('div');
+        messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
+
+        const messageAuthor = document.createElement('span');
+        messageAuthor.classList.add('font-bold', 'text-sm');
+        messageAuthor.innerText = "INFO";
+        messageAuthor.style.color = "#ff0000";
+
+        const messageTime = document.createElement('span');
+        messageTime.classList.add('text-xs', 'text-gray-500');
+        const now = new Date();
+        messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        messageHeader.appendChild(messageAuthor);
+        messageHeader.appendChild(messageTime);
+
+        const messageText = document.createElement('p');
+        messageText.classList.add('text-sm');
+        messageText.innerHTML = "Type !info for more information.";
+
+        messageContent.appendChild(messageHeader);
+        messageContent.appendChild(messageText);
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+
+        chat.appendChild(messageDiv);
+        chat.scrollTop = chat.scrollHeight;
+
+    });
+
+    socket.on('update_users_online', (data) => {
+        const onlineUsersSpan = document.getElementById('online-users-count');
+        const onlineUsersList = document.getElementById('online-users-list');
+
+        if (data && data.users) {
+            onlineUsersSpan.innerText = data.users.length;
+            onlineUsersList.innerHTML = '';
+            data.users.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('flex', 'items-center', 'space-x-2', 'p-2', 'rounded-md', 'bg-[#21262d]');
+
+                const avatar = document.createElement('div');
+                avatar.classList.add('w-6', 'h-6', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-xs', 'flex-shrink-0');
+                const userColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                avatar.style.backgroundColor = userColor;
+                avatar.innerText = user.charAt(0).toUpperCase();
+
+                const usernameSpan = document.createElement('span');
+                usernameSpan.classList.add('font-medium', 'text-sm');
+                if (user == username){
+                    usernameSpan.innerText = user + " (You)";
+                } else {
                     usernameSpan.innerText = user;
-
-                    listItem.appendChild(avatar);
-                    listItem.appendChild(usernameSpan);
-                    onlineUsersList.appendChild(listItem);
-                });
-            }
-        });
-
-        socket.on('nickname_taken', () => {
-            // Zmienione na niestandardowy modal, żeby nie było problemów z alert()
-            showModal("Ten nick jest już zajęty. Wybierz inny.");
-        });
-
-        socket.on('registration_successful', () => {
-            console.log("Zalogowano pomyślnie.");
-        });
-
-        const chat = document.getElementById('chat');
-        const input = document.getElementById('input');
-        const sendBtn = document.getElementById('send');
-        const userSpan = document.getElementById('user');
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const username = urlParams.get('username') || 'anonim';
-        const usercolor = urlParams.get('color') || '#c9d1d9';
-
-        userSpan.innerText = username;
-        userSpan.style.color = usercolor;
-
-        sendBtn.onclick = () => {
-            const msg = input.value.trim();
-            if (!msg) return;
-            socket.emit('send_message', { username: username, color: usercolor, text: msg });
-            input.value = '';
-        };
-
-        socket.on('receive_message', (data) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('flex', 'items-start', 'space-x-3');
-
-            const avatar = document.createElement('div');
-            avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-sm', 'flex-shrink-0');
-            avatar.style.backgroundColor = data.color;
-            avatar.innerText = data.username.charAt(0).toUpperCase();
-
-            const messageContent = document.createElement('div');
-            messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
-
-            const messageHeader = document.createElement('div');
-            messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
-
-            const messageAuthor = document.createElement('span');
-            messageAuthor.classList.add('font-bold', 'text-sm');
-            messageAuthor.innerText = data.username;
-            messageAuthor.style.color = data.color;
-
-            const messageTime = document.createElement('span');
-            messageTime.classList.add('text-xs', 'text-gray-500');
-            const now = new Date();
-            messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            messageHeader.appendChild(messageAuthor);
-            messageHeader.appendChild(messageTime);
-
-            const messageText = document.createElement('p');
-            messageText.classList.add('text-sm');
-            if (!data.text.startsWith("<img")) {
-                messageText.innerText = data.text;
-            } else {
-                messageText.innerHTML = data.text;
-            }
-
-            messageContent.appendChild(messageHeader);
-            messageContent.appendChild(messageText);
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(messageContent);
-
-            chat.appendChild(messageDiv);
-            chat.scrollTop = chat.scrollHeight;
-        });
-
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendBtn.click();
-        });
-
-        function showModal(message) {
-            const modal = document.createElement('div');
-            modal.classList.add('fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'z-50', 'bg-black', 'bg-opacity-50');
-            modal.innerHTML = `
-                <div class="bg-[#161b22] p-6 rounded-lg shadow-xl border border-[#30363d] max-w-sm">
-                    <p class="text-white mb-4">${message}</p>
-                    <button id="modal-ok-btn" class="bg-[#58a6ff] hover:bg-[#4695ff] text-white font-bold py-2 px-4 rounded transition-colors duration-300">
-                        OK
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            document.getElementById('modal-ok-btn').addEventListener('click', () => {
-                modal.remove();
-                window.location.href = "/login";
+                }
+                listItem.appendChild(avatar);
+                listItem.appendChild(usernameSpan);
+                onlineUsersList.appendChild(listItem);
             });
         }
-    </script>
-</body>
+    });
+
+    socket.on('nickname_taken', () => {
+        showModal("Ten nick jest już zajęty. Wybierz inny.");
+    });
+
+    socket.on('registration_successful', () => {
+        console.log("Loged succesfully.");
+    });
+
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const userSpan = document.getElementById('user');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username') || 'anonim';
+    const usercolor = urlParams.get('color') || '#c9d1d9';
+
+    userSpan.innerText = username;
+    userSpan.style.color = usercolor;
+
+    sendBtn.onclick = () => {
+        const msg = input.value.trim();
+        if (!msg) return;
+        socket.emit('send_message', { username: username, color: usercolor, text: msg });
+        input.value = '';
+    };
+
+    socket.on('receive_message', (data) => {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('flex', 'items-start', 'space-x-3');
+
+        const avatar = document.createElement('div');
+        avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-sm', 'flex-shrink-0');
+        avatar.style.backgroundColor = data.color;
+        avatar.innerText = data.username.charAt(0).toUpperCase();
+
+        const messageContent = document.createElement('div');
+        messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
+
+        const messageHeader = document.createElement('div');
+        messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
+
+        const messageAuthor = document.createElement('span');
+        messageAuthor.classList.add('font-bold', 'text-sm');
+        messageAuthor.innerText = data.username;
+        messageAuthor.style.color = data.color;
+
+        const messageTime = document.createElement('span');
+        messageTime.classList.add('text-xs', 'text-gray-500');
+        const now = new Date();
+        messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        messageHeader.appendChild(messageAuthor);
+        messageHeader.appendChild(messageTime);
+
+        const messageText = document.createElement('p');
+        messageText.classList.add('text-sm');
+        if (!data.text.startsWith("<img")) {
+            messageText.innerText = data.text;
+        } else {
+            messageText.innerHTML = data.text;
+        }
+
+        messageContent.appendChild(messageHeader);
+        messageContent.appendChild(messageText);
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+
+        chat.appendChild(messageDiv);
+        chat.scrollTop = chat.scrollHeight;
+    });
+
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+    });
+
+    function showModal(message) {
+        const modal = document.createElement('div');
+        modal.classList.add('fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'z-50', 'bg-black', 'bg-opacity-50');
+        modal.innerHTML = `
+            <div class="bg-[#161b22] p-6 rounded-lg shadow-xl border border-[#30363d] max-w-sm">
+                <p class="text-white mb-4">${message}</p>
+                <button id="modal-ok-btn" class="bg-[#58a6ff] hover:bg-[#4695ff] text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+                    OK
+                </button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('modal-ok-btn').addEventListener('click', () => {
+            modal.remove();
+            window.location.href = "/login";
+        });
+    }
+</script>
 
 </html>

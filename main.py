@@ -55,6 +55,9 @@ def login():
     error = request.args.get('error')
     return render_template('login.html', error=error)
 
+@app.route("/about")
+def about():
+    return render_template('about.html')
 
 @socketio.on('user_count')
 def handle_user_count():
@@ -102,7 +105,7 @@ def handle_message(data):
 
     messages.append({"message": data["text"], "username": data['username'],
                      "datetime": datetime.now().strftime("%d.%m.%Y %H:%M:%S")})
-    if bot.is_command(data["text"]):
+    if bot.is_command(data["text"]) or data["text"].startswith('/'):
         response = bot.get_reply(data["text"])
         if response:
             emit('receive_message', {

@@ -9,7 +9,7 @@ class Bot:
     def __init__(self):
         self.prefix: str = "!"
         self.replies: dict[str, str] = {
-            "info": "I'm a web bot!",
+            "info": "This is a simple, no-frills chat app side project — check out /about page for more info and fun facts!",
         }
 
         self.commands: dict[str, tuple[Callable[..., Optional[str]], str]] = {
@@ -59,6 +59,10 @@ class Bot:
         return random.choice(self.quotes)
 
     def get_reply(self, msg: str) -> Optional[str]:
+        if msg.startswith('/about'):
+            print("Next idiot!")
+            return "Nah 🤦 I mean /about page. You can find it in the bottom of this page."
+
         if not self.is_command(msg):
             return None
 
