@@ -1,4 +1,4 @@
-# Chat Web
+# WebChat
 
 A simple yet modern real-time LAN chat application with a Flask backend and a web frontend using Socket.IO.
 
