@@ -60,6 +60,10 @@ def login():
 def about():
     return render_template('about.html')
 
+@socketio.on('user_typing')
+def handle_typing(data):
+    emit('show_typing', data, broadcast=True, include_self=False)
+
 
 @socketio.on('user_count')
 def handle_user_count():

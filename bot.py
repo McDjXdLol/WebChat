@@ -8,11 +8,11 @@ class Bot:
     def __init__(self):
         self.prefix: str = "!"
         self.replies: dict[str, str] = {
-            "info": "This is a simple, no-frills chat app side project — check out /about page for more info and fun facts!",
+            "info": "This is a simple, no-frills chat app side project — check out /about page for more info and fun facts! And also you can type in !help for more commands.",
         }
 
         self.commands: dict[str, tuple[Callable[..., Optional[str]], str]] = {
-            "info": (self.cmd_info, "Send info about bot"),
+            "info": (self.cmd_info, "Send info about page"),
             "help": (self.cmd_help, "Show this help menu"),
             "time": (self.cmd_time, "Show current time"),
             "echo": (self.cmd_echo, "Echo back your message"),

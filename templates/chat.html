@@ -60,9 +60,13 @@
                 </svg>
                 <span id="online-users-count" class="font-bold text-lg">0</span>
             </div>
+
         </div>
 
-        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
+        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]">
+        </div>
+
+         <div id="typing-indicator" class="text-sm text-gray-400 mt-2" style="display:block;">‎ </div>
 
         <div class="flex items-center space-x-2">
             <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
@@ -71,6 +75,8 @@
                            hover:bg-[#30363d] transition-colors duration-300">
                 Send
             </button>
+
+
         </div>
     </div>
 
@@ -88,9 +94,50 @@
 </footer>
 </body>
 <script>
+    const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const userSpan = document.getElementById('user');
+
+const urlParams = new URLSearchParams(window.location.search);
+const username = urlParams.get('username') || 'anonim';
+const usercolor = urlParams.get('color') || '#c9d1d9';
+
+userSpan.innerText = username;
+userSpan.style.color = usercolor;
+
+input.addEventListener('keydown', (e) => {
+    if (e.key === "Enter") {
+        socket.emit('user_typing', {
+            username: username,
+            color: usercolor,
+            done: true
+        });
+        sendBtn.click();
+    } else {
+        socket.emit('user_typing', {
+            username: username,
+            color: usercolor,
+            done: false
+        });
+    }
+});
+
     const socket = io();
 
     let pingStart = null;
+
+socket.on('show_typing', (data) => {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (!data.done) {
+        typingIndicator.innerText = `${data.username} is typing...`;
+        typingIndicator.style.display = 'block';
+    } else {
+        typingIndicator.style.display = 'none';
+    }
+});
+
+
 
 function sendPing() {
     pingStart = Date.now();
@@ -188,15 +235,6 @@ function sendPing() {
     socket.on('registration_successful', () => {
         console.log("Loged succesfully.");
     });
-
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('input');
-    const sendBtn = document.getElementById('send');
-    const userSpan = document.getElementById('user');
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username') || 'anonim';
-    const usercolor = urlParams.get('color') || '#c9d1d9';
 
     userSpan.innerText = username;
     userSpan.style.color = usercolor;
