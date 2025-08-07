@@ -55,9 +55,11 @@ def login():
     error = request.args.get('error')
     return render_template('login.html', error=error)
 
+
 @app.route("/about")
 def about():
     return render_template('about.html')
+
 
 @socketio.on('user_count')
 def handle_user_count():

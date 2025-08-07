@@ -226,10 +226,14 @@
 
         const messageText = document.createElement('p');
         messageText.classList.add('text-sm');
-        if (!data.text.startsWith("<img")) {
-            messageText.innerText = data.text;
-        } else {
+        if (data.text.startsWith("<img")) {
             messageText.innerHTML = data.text;
+        } else if(data.text.startsWith("<time>")){
+            const clientTime = new Date();
+            messageText.innerText = clientTime.getHours().toString() + ":" + clientTime.getMinutes().toString() + ":"+clientTime.getSeconds().toString()
+        }
+        else {
+            messageText.innerText = data.text;
         }
 
         messageContent.appendChild(messageHeader);

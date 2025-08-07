@@ -42,8 +42,7 @@ class Bot:
 
     @staticmethod
     def cmd_time(**kwargs) -> str:
-        now = datetime.datetime.now()
-        return now.strftime("%H:%M:%S")
+        return "<time>"
 
     def cmd_echo(self, msg: str, **kwargs) -> str:
         return msg[len(self.prefix + "echo"):].strip()
