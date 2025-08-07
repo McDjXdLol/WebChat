@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - Chat web</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,22 +14,28 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0d1117; /* Jeszcze ciemniejsze tło */
-            color: #c9d1d9; /* Jasny tekst */
+            background-color: #0d1117;
+            /* Jeszcze ciemniejsze tło */
+            color: #c9d1d9;
+            /* Jasny tekst */
         }
+
         /* Dodatkowe style dla przewijania */
         #chat {
             height: 60vh;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
+
         /* Styl dla paska przewijania w WebKit (Chrome, Safari) */
         #chat::-webkit-scrollbar {
             width: 8px;
         }
+
         #chat::-webkit-scrollbar-track {
             background: #161b22;
         }
+
         #chat::-webkit-scrollbar-thumb {
             background-color: #30363d;
             border-radius: 4px;
@@ -38,115 +45,116 @@
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-4">
-<div class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-4xl mx-auto border border-[#30363d] flex flex-col h-[90vh]">
+    <div
+        class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-4xl mx-auto border border-[#30363d] flex flex-col h-[90vh]">
 
-    <h2 class="text-3xl font-extrabold text-[#58a6ff] mb-4 text-center">Welcome, <span id="user"></span>!</h2>
+        <h2 class="text-3xl font-extrabold text-[#58a6ff] mb-4 text-center">Welcome, <span id="user"></span>!</h2>
 
-    <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
+        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
 
-    <div class="flex items-center space-x-2">
-        <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
-               class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
-        <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
+        <div class="flex items-center space-x-2">
+            <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
+                class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
+            <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
                        hover:bg-[#30363d] transition-colors duration-300">
-            Send
-        </button>
+                Send
+            </button>
+        </div>
     </div>
-</div>
 
-<script>
-    const socket = io();
+    <script>
+        const socket = io();
 
-socket.on('connect', () => {
-socket.emit('register_user', {
-    username: "{{ username }}"
-});
-});
+        socket.on('connect', () => {
+            socket.emit('register_user', {
+                username: "{{ username }}"
+            });
+        });
 
-socket.on('nickname_taken', () => {
-alert("This nickname is already in use. Choose a different one.");
-window.location.href = "/login";
-});
+        socket.on('nickname_taken', () => {
+            alert("This nickname is already in use. Choose a different one.");
+            window.location.href = "/login";
+        });
 
-socket.on('registration_successful', () => {
-console.log("Zalogowano pomyślnie.");
-});
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('input');
-    const sendBtn = document.getElementById('send');
-    const userSpan = document.getElementById('user');
+        socket.on('registration_successful', () => {
+            console.log("Zalogowano pomyślnie.");
+        });
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+        const sendBtn = document.getElementById('send');
+        const userSpan = document.getElementById('user');
 
-    // Pobieranie parametrów z URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username') || 'anonim';
-    const usercolor = urlParams.get('color') || '#c9d1d9';
+        // Pobieranie parametrów z URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username') || 'anonim';
+        const usercolor = urlParams.get('color') || '#c9d1d9';
 
-    // Ustawienie nicku i koloru
-    userSpan.innerText = username;
-    userSpan.style.color = usercolor;
+        // Ustawienie nicku i koloru
+        userSpan.innerText = username;
+        userSpan.style.color = usercolor;
 
-    // Obsługa wysyłania wiadomości
-    sendBtn.onclick = () => {
-        const msg = input.value.trim();
-        if (!msg) return;
-        socket.emit('send_message', { username: username, color: usercolor, text: msg });
-        input.value = '';
-    };
+        // Obsługa wysyłania wiadomości
+        sendBtn.onclick = () => {
+            const msg = input.value.trim();
+            if (!msg) return;
+            socket.emit('send_message', { username: username, color: usercolor, text: msg });
+            input.value = '';
+        };
 
-    // Obsługa odbierania wiadomości
-    socket.on('receive_message', (data) => {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('flex', 'items-start', 'space-x-3');
+        // Obsługa odbierania wiadomości
+        socket.on('receive_message', (data) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', 'items-start', 'space-x-3');
 
-        // Tworzenie awatara
-        const avatar = document.createElement('div');
-        avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-sm', 'flex-shrink-0');
-        avatar.style.backgroundColor = data.color;
-        avatar.innerText = data.username.charAt(0).toUpperCase();
+            // Tworzenie awatara
+            const avatar = document.createElement('div');
+            avatar.classList.add('w-8', 'h-8', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-sm', 'flex-shrink-0');
+            avatar.style.backgroundColor = data.color;
+            avatar.innerText = data.username.charAt(0).toUpperCase();
 
-        // Tworzenie treści wiadomości
-        const messageContent = document.createElement('div');
-        messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
+            // Tworzenie treści wiadomości
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
 
-        const messageHeader = document.createElement('div');
-        messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
+            const messageHeader = document.createElement('div');
+            messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
 
-        const messageAuthor = document.createElement('span');
-        messageAuthor.classList.add('font-bold', 'text-sm');
-        messageAuthor.innerText = data.username;
-        messageAuthor.style.color = data.color;
+            const messageAuthor = document.createElement('span');
+            messageAuthor.classList.add('font-bold', 'text-sm');
+            messageAuthor.innerText = data.username;
+            messageAuthor.style.color = data.color;
 
-        const messageTime = document.createElement('span');
-        messageTime.classList.add('text-xs', 'text-gray-500');
-        const now = new Date();
-        messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const messageTime = document.createElement('span');
+            messageTime.classList.add('text-xs', 'text-gray-500');
+            const now = new Date();
+            messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-        messageHeader.appendChild(messageAuthor);
-        messageHeader.appendChild(messageTime);
+            messageHeader.appendChild(messageAuthor);
+            messageHeader.appendChild(messageTime);
 
-        const messageText = document.createElement('p');
-        messageText.classList.add('text-sm');
-        if not data.text.startsWith("<img"){
-            messageText.innerText = data.text;
-        } else{
-            messageText.innerHTML = data.text;
-        }
+            const messageText = document.createElement('p');
+            messageText.classList.add('text-sm');
+            if (!data.text.startsWith("<img")){
+                messageText.innerText = data.text;
+            } else {
+                messageText.innerHTML = data.text;
+            }
 
-        messageContent.appendChild(messageHeader);
-        messageContent.appendChild(messageText);
+            messageContent.appendChild(messageHeader);
+            messageContent.appendChild(messageText);
 
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(messageContent);
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
 
-        chat.appendChild(messageDiv);
-        chat.scrollTop = chat.scrollHeight;
-    });
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+        });
 
-    // Obsługa wysyłania wiadomości przez Enter
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendBtn.click();
-    });
-</script>
+        // Obsługa wysyłania wiadomości przez Enter
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+    </script>
 </body>
 
 </html>
