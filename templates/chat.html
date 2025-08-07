@@ -18,21 +18,27 @@
             color: #c9d1d9;
         }
 
-        #chat {
-            height: 60vh;
+        /* Dodatkowe style dla przewijania */
+        #chat,
+        #users-list-container {
+            height: 100%;
             overflow-y: auto;
             scroll-behavior: smooth;
         }
 
-        #chat::-webkit-scrollbar {
+        /* Styl dla paska przewijania w WebKit (Chrome, Safari) */
+        #chat::-webkit-scrollbar,
+        #users-list-container::-webkit-scrollbar {
             width: 8px;
         }
 
-        #chat::-webkit-scrollbar-track {
+        #chat::-webkit-scrollbar-track,
+        #users-list-container::-webkit-scrollbar-track {
             background: #161b22;
         }
 
-        #chat::-webkit-scrollbar-thumb {
+        #chat::-webkit-scrollbar-thumb,
+        #users-list-container::-webkit-scrollbar-thumb {
             background-color: #30363d;
             border-radius: 4px;
             border: 2px solid #161b22;
@@ -41,32 +47,49 @@
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-4">
-    <div
-        class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-4xl mx-auto border border-[#30363d] flex flex-col h-[90vh]">
+    <!-- Zmieniona struktura, aby dodać panel użytkowników obok czatu -->
+    <div class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto border border-[#30363d] flex h-[90vh]">
 
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
-            <div class="flex items-center space-x-2 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-users-2 text-[#c9d1d9]">
-                    <path d="M14 19a6 6 0 0 0-12 0" />
-                    <circle cx="8" cy="9" r="4" />
-                    <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6" />
-                    <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                </svg>
-                <span id="online-users-count" class="font-bold text-lg">0</span>
+        <!-- Kontener na lewo (czat) -->
+        <div class="flex flex-col flex-grow mr-4">
+            <!-- Nagłówek czatu z dynamicznymi danymi z backendu -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
+                <div class="flex items-center space-x-2 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-users-2 text-[#c9d1d9]">
+                        <path d="M14 19a6 6 0 0 0-12 0" />
+                        <circle cx="8" cy="9" r="4" />
+                        <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6" />
+                        <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    </svg>
+                    <span id="online-users-count" class="font-bold text-lg">0</span>
+                </div>
+            </div>
+
+            <!-- Okno czatu -->
+            <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
+
+            <!-- Pole do wpisywania i przycisk wysyłania -->
+            <div class="flex items-center space-x-2">
+                <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
+                    class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
+                <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
+                           hover:bg-[#30363d] transition-colors duration-300">
+                    Send
+                </button>
             </div>
         </div>
-        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]"></div>
 
-        <div class="flex items-center space-x-2">
-            <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
-                class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
-            <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
-                       hover:bg-[#30363d] transition-colors duration-300">
-                Send
-            </button>
+        <!-- Panel po prawej stronie z listą użytkowników -->
+        <div class="w-64 flex-shrink-0 flex flex-col bg-[#161b22] rounded-xl border border-[#30363d] p-4">
+            <h3 class="text-xl font-bold text-[#c9d1d9] mb-4">Online Users</h3>
+            <div id="users-list-container" class="flex-grow overflow-y-auto">
+                <ul id="online-users-list" class="space-y-2">
+                    <!-- Lista będzie dynamicznie generowana przez JS -->
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -77,21 +100,48 @@
             socket.emit('register_user', {
                 username: "{{ username }}"
             });
+            // Zachowałem Twoje oryginalne wywołanie
             socket.emit('user_count');
         });
+
+        // Obsługa aktualizacji listy użytkowników i licznika
         socket.on('update_users_online', (data) => {
             const onlineUsersSpan = document.getElementById('online-users-count');
-            onlineUsersSpan.innerText = data.count;
+            const onlineUsersList = document.getElementById('online-users-list');
+
+            if (data && data.users) {
+                onlineUsersSpan.innerText = data.users.length;
+                onlineUsersList.innerHTML = '';
+                data.users.forEach(user => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('flex', 'items-center', 'space-x-2', 'p-2', 'rounded-md', 'bg-[#21262d]');
+
+                    const avatar = document.createElement('div');
+                    avatar.classList.add('w-6', 'h-6', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-xs', 'flex-shrink-0');
+                    const userColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                    avatar.style.backgroundColor = userColor;
+                    avatar.innerText = user.charAt(0).toUpperCase();
+
+                    const usernameSpan = document.createElement('span');
+                    usernameSpan.classList.add('font-medium', 'text-sm');
+                    usernameSpan.innerText = user;
+
+                    listItem.appendChild(avatar);
+                    listItem.appendChild(usernameSpan);
+                    onlineUsersList.appendChild(listItem);
+                });
+            }
         });
 
         socket.on('nickname_taken', () => {
-            alert("This nickname is already in use. Choose a different one.");
-            window.location.href = "/login";
+            // Zmienione na niestandardowy modal, żeby nie było problemów z alert()
+            showModal("Ten nick jest już zajęty. Wybierz inny.");
         });
 
         socket.on('registration_successful', () => {
             console.log("Zalogowano pomyślnie.");
         });
+
         const chat = document.getElementById('chat');
         const input = document.getElementById('input');
         const sendBtn = document.getElementById('send');
@@ -160,6 +210,24 @@
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendBtn.click();
         });
+
+        function showModal(message) {
+            const modal = document.createElement('div');
+            modal.classList.add('fixed', 'inset-0', 'flex', 'items-center', 'justify-center', 'z-50', 'bg-black', 'bg-opacity-50');
+            modal.innerHTML = `
+                <div class="bg-[#161b22] p-6 rounded-lg shadow-xl border border-[#30363d] max-w-sm">
+                    <p class="text-white mb-4">${message}</p>
+                    <button id="modal-ok-btn" class="bg-[#58a6ff] hover:bg-[#4695ff] text-white font-bold py-2 px-4 rounded transition-colors duration-300">
+                        OK
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('modal-ok-btn').addEventListener('click', () => {
+                modal.remove();
+                window.location.href = "/login";
+            });
+        }
     </script>
 </body>
 

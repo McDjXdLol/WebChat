@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from flask import Flask, render_template, request, url_for, redirect, jsonify
-from flask_socketio import SocketIO, emit, disconnect
+from flask_socketio import SocketIO, emit
 
 from bot import Bot
 
@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback')
 socketio = SocketIO(app)
 
+online_users = set()
 connected_users = {}  # {nickname: sid}
 sid_to_nickname = {}  # {sid: nickname}
 messages = []  # [{"datetime": "{datetime}","message": "{msg}","username": "{nick}}"}]
@@ -52,7 +53,7 @@ def login():
 
 @socketio.on('user_count')
 def handle_user_count():
-    emit('update_users_online', {'count': len(connected_users)}, broadcast=True)
+    emit('update_users_online', {'users': list(online_users)}, broadcast=True)
 
 
 @socketio.on('connect')
@@ -61,28 +62,31 @@ def handle_connect():
 
 
 @socketio.on('register_user')
-def handle_register_user(data):
-    username = data.get("username")
-    if username in connected_users:
+def handle_register(data):
+    username = data.get('username')
+    sid = request.sid
+    if username in online_users:
         emit('nickname_taken')
-        disconnect()
         return
+    online_users.add(username)
+    sid_to_nickname[sid] = username
 
-    connected_users[username] = request.sid
-    sid_to_nickname[request.sid] = username
-    print(f"Registered: {username} ({request.sid})")
     emit('registration_successful')
+
+    # Wyślij aktualizację listy online do wszystkich klientów
+    emit('update_users_online', {'users': list(online_users)}, broadcast=True)
 
 
 @socketio.on('disconnect')
 def handle_disconnect():
     sid = request.sid
-    nickname = sid_to_nickname.pop(sid, None)
-    if nickname:
-        connected_users.pop(nickname, None)
-        print(f"{nickname} disconnected - ({sid})")
-    else:
-        print(f"Unknown client disconected - ({sid})")
+    username = sid_to_nickname.get(sid)
+    if username:
+        online_users.discard(username)
+        del sid_to_nickname[sid]
+
+        # Aktualizuj listę u wszystkich klientów
+        emit('update_users_online', {'users': list(online_users)}, broadcast=True)
 
 
 @socketio.on('send_message')
