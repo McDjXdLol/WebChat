@@ -1,4 +1,3 @@
-import datetime
 import random
 from typing import Optional, Callable
 
@@ -20,7 +19,8 @@ class Bot:
             "joke": (self.cmd_joke, "Tells a random joke"),
             "roll": (self.cmd_dice, "Rolls a dice"),
             "quote": (self.cmd_quote, "Tells a random quote"),
-            "img": (self.cmd_image, "<URL> Displays an image from the provided URL in the chat.")
+            "img": (self.cmd_image, "<URL> Displays an image from the provided URL in the chat"),
+            "ping": (self.cmd_ping, "Returns amout of ping")
         }
 
         files = Files()
@@ -29,6 +29,10 @@ class Bot:
 
     def is_command(self, msg: str) -> bool:
         return msg.startswith(self.prefix)
+
+    @staticmethod
+    def cmd_ping(**kwargs):
+        return "<ping>"
 
     @staticmethod
     def cmd_image(msg: str, **kwargs) -> str:

@@ -89,6 +89,18 @@
 </body>
 <script>
     const socket = io();
+
+    let pingStart = null;
+
+function sendPing() {
+    pingStart = Date.now();
+    socket.emit('send_message', {
+        username: username,
+        color: usercolor,
+        text: "!ping"
+    });
+}
+
     socket.on('connect', () => {
         socket.emit('register_user', {
             username: "{{ username }}"
@@ -192,6 +204,10 @@
     sendBtn.onclick = () => {
         const msg = input.value.trim();
         if (!msg) return;
+
+
+        if (msg === "!ping") pingStart = Date.now();
+
         socket.emit('send_message', { username: username, color: usercolor, text: msg });
         input.value = '';
     };
@@ -228,7 +244,12 @@
         messageText.classList.add('text-sm');
         if (data.text.startsWith("<img")) {
             messageText.innerHTML = data.text;
-        } else if(data.text.startsWith("<time>")){
+        } else if (data.text.startsWith("<ping>")) {
+            const latency = Date.now() - pingStart;
+            messageText.innerText = `Pong! ${latency}ms`;
+        }
+
+        else if(data.text.startsWith("<time>")){
             const clientTime = new Date();
             messageText.innerText = clientTime.getHours().toString() + ":" + clientTime.getMinutes().toString() + ":"+clientTime.getSeconds().toString()
         }
