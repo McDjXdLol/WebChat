@@ -7,6 +7,7 @@ import random
 
 socketio = SocketIO()
 bot = Bot()
+unique_users_count = 0
 
 @socketio.on('user_typing')
 def handle_typing(data):

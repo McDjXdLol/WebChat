@@ -415,7 +415,7 @@
         const messageText = document.createElement('p');
         messageText.classList.add('text-sm');
 
-        if (data.text.startsWith("<img src=")) {
+        if (data.text.startsWith("<img id=")) {
             messageText.innerHTML = data.text;
         }
         else if (data.text == "<ping>") {

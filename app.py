@@ -17,4 +17,5 @@ app.config['JSON_AS_ASCII'] = False
 
 if __name__ == '__main__':
     socketio.init_app(app)
-    socketio.run(app, debug=True)
+    socketio.run(app, host='0.0.0.0', port=80, debug=True)
+
