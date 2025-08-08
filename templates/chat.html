@@ -182,7 +182,7 @@
 
     <footer
         class="fixed bottom-0 w-full p-4 bg-[#161b22] text-[#c9d1d9] flex justify-center items-center rounded-t-2xl border-t border-[#30363d] shadow-2xl">
-        <a href="{{ url_for('about') }}" target="_blank" class="text-sm">About</a>
+        <a href="{{ url_for('pages.about') }}" target="_blank" class="text-sm">About</a>
     </footer>
 </body>
 <script>
@@ -360,11 +360,11 @@
 
 
     socket.on('nickname_taken', () => {
-        showModal("Ten nick jest już zajęty. Wybierz inny.");
+        showModal("This nickname is already taken. Try other one.");
     });
 
     socket.on('registration_successful', () => {
-        console.log("Loged succesfully.");
+        console.log("Logged succesfully.");
     });
 
     userSpan.innerText = username;
