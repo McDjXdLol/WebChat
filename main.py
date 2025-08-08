@@ -45,6 +45,37 @@ def unique_users_count_api():
 def users_online():
     return jsonify({"online_users": list(online_users.keys()), "amount": len(online_users)})
 
+@app.route('/api/bot_commands')
+def bot_commands():
+    if not bot.commands:
+        return jsonify({"commands": [], "amount": 0})
+    
+    available_commands = []
+    commands = list(bot.commands.keys())
+    for command in commands:
+        available_commands.append({
+            "name": f"!{command}",
+            "description": bot.commands[command][1]
+        })
+    return jsonify({"commands": available_commands, "amount": len(available_commands)})
+
+@app.route('/api/stats')
+def stats():
+    return jsonify({
+        "unique_users": len(unique_users),
+        "online_users": len(online_users),
+        "total_messages": len(messages)
+    })
+
+@app.route('/api/about')
+def about_api():
+    return jsonify({
+        "name": "Chat Web",
+        "version": "1.0.0-iguess",
+        "description": "A simple chat application with a bot.",
+        "author": "McDjXdLol",
+        "license": "MIT"
+    })
 
 @app.route('/healthz')
 def healthz():

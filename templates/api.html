@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>APIs - Chat web</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -19,59 +19,386 @@
 
         .api-link {
             transition: transform 0.2s ease-in-out;
+            display: block;
         }
 
         .api-link:hover {
-            transform: scale(1.05);
+            background-color: #30363d;
+        }
+
+        .api-card {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            transition: background-color 300ms;
+            min-height: 80px;
+        }
+
+        .api-card.active {
+            background-color: #30363d;
+            border-color: #58a6ff;
+        }
+
+        .api-details-panel {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2.5rem;
+        }
+
+        /* Stylizacja scrollbarów */
+        .api-details-panel::-webkit-scrollbar,
+        .api-list-scroll::-webkit-scrollbar,
+        .detail-card pre::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .api-details-panel::-webkit-scrollbar-track,
+        .api-list-scroll::-webkit-scrollbar-track,
+        .detail-card pre::-webkit-scrollbar-track {
+            background: #161b22;
+            border-radius: 10px;
+        }
+
+        .api-details-panel::-webkit-scrollbar-thumb,
+        .api-list-scroll::-webkit-scrollbar-thumb,
+        .detail-card pre::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            border-radius: 10px;
+            border: 2px solid #161b22;
+        }
+
+        .api-list-scroll {
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .detail-card {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-8">
+    <div class="w-full max-w-7xl">
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-extrabold text-[#58a6ff] mb-2">
+                APIs
+            </h1>
+            <p class="text-lg text-gray-400">
+                Select an endpoint to view details and an example response.
+            </p>
+        </div>
 
-    <div class="bg-[#161b22] rounded-2xl shadow-xl p-8 md:p-12 text-center max-w-2xl mx-auto border border-[#30363d]">
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="w-full md:w-1/3 space-y-2">
+                <div id="api-list" class="space-y-2 api-list-scroll">
+                </div>
+                <a href="/" class="api-link">
+                    <button
+                        class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 mt-6 px-8 rounded-xl border border-[#30363d] shadow-lg
+                                hover:bg-[#30363d] transition-colors duration-300 flex items-center justify-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-home">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        <span>Back to Home</span>
+                    </button>
+                </a>
+            </div>
 
-        <h1 class="text-4xl md:text-5xl font-extrabold text-[#58a6ff] mb-4">API Gateway</h1>
-        <p class="text-lg md:text-xl font-medium text-gray-300 mb-8">
-            Choose your destination, champ!
-        </p>
-
-        <div class="flex flex-col space-y-4">
-            <a href="api/messages_history" class="api-link">
-                <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
-                           hover:bg-[#30363d] transition-colors duration-300">
-                    Message History
-                </button>
-            </a>
-            <a href="api/users_online" class="api-link">
-                <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
-                           hover:bg-[#30363d] transition-colors duration-300">
-                    Users Online
-                </button>
-            </a>
-            
-            <a href="api/unique_users" class="api-link">
-                <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
-                           hover:bg-[#30363d] transition-colors duration-300">
-                    Unique Users
-                </button>
-            </a>
-            <a href="/" class="api-link">
-                <button
-                    class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
-                           hover:bg-[#30363d] transition-colors duration-300 flex items-center justify-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-home">
-                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
-                    <span>Back to Home</span>
-                </button>
-            </a>
+            <div id="api-details-container" class="w-full md:w-2/3">
+                <div id="api-details-placeholder" class="flex items-center justify-center api-details-panel h-full">
+                    <p class="text-gray-500 text-xl font-semibold">
+                        Select an API from the left to view details.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
+    <script>
+        const apis = [
+            {
+                id: 'messages_history',
+                title: 'Message History',
+                description: 'Returns the full history of chat messages, including username, message content, and timestamp.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+                details: {
+                    endpoint: '/api/messages_history',
+                    method: 'GET',
+                    response: [
+                        {
+                            "datetime": "08.08.2025 10:34:21",
+                            "message": "alfa",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:21",
+                            "message": "beta",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:23",
+                            "message": "omega",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:24",
+                            "message": "test",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:27",
+                            "message": "!info",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:27",
+                            "message": "This is a simple, no-frills chat app side project \u2014 check out /about page for more info and fun facts! And also you can type in !help for more commands.",
+                            "username": "Bot"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:28",
+                            "message": "!help",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:28",
+                            "message": "!info - Send info about page\n!help - Show this help menu\n!time - Show current time\n!echo - Echo back your message\n!joke - Tells a random joke\n!roll - Rolls a dice\n!quote - Tells a random quote\n!img - <URL> Displays an image from the provided URL in the chat\n!ping - Returns amout of ping",
+                            "username": "Bot"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:30",
+                            "message": "/about",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:30",
+                            "message": "Nah \ud83e\udd26 I mean /about page. You can find it in the bottom of this page.",
+                            "username": "Bot"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:32",
+                            "message": "!ping",
+                            "username": "Zordon"
+                        },
+                        {
+                            "datetime": "08.08.2025 10:34:32",
+                            "message": "<ping>",
+                            "username": "Bot"
+                        }
+                    ]
+                }
+            },
+            {
+                id: 'users_online',
+                title: 'Users Online',
+                description: 'Returns the list of currently online users with their usernames and the total number of users online right now.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+                details: {
+                    endpoint: '/api/users_online',
+                    method: 'GET',
+                    response: {
+                        "amount": 1,
+                        "online_users": [
+                            "b"
+                        ]
+                    }
+                }
+            },
+            {
+                id: 'unique_users',
+                title: 'Unique Users',
+                description: 'Provides a list of all unique users who have ever connected along with the total count of unique users.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+                details: {
+                    endpoint: '/api/unique_users',
+                    method: 'GET',
+                    response: {
+                        "amount": 2,
+                        "unique_users": [
+                            "a",
+                            "b"
+                        ]
+                    }
+                }
+            },
+            {
+                id: 'bot_commands',
+                title: 'Available Bot Commands',
+                description: 'Returns a list of available bot commands with their descriptions, so clients can display help or command info.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M7 15h10"/></svg>`,
+                details: {
+                    endpoint: '/api/bot_commands',
+                    method: 'GET',
+                    response: {
+                        "amount": 9,
+                        "commands": [
+                            {
+                                "description": "Send info about page",
+                                "name": "!info"
+                            },
+                            {
+                                "description": "Show this help menu",
+                                "name": "!help"
+                            },
+                            {
+                                "description": "Show current time",
+                                "name": "!time"
+                            },
+                            {
+                                "description": "Echo back your message",
+                                "name": "!echo"
+                            },
+                            {
+                                "description": "Tells a random joke",
+                                "name": "!joke"
+                            },
+                            {
+                                "description": "Rolls a dice",
+                                "name": "!roll"
+                            },
+                            {
+                                "description": "Tells a random quote",
+                                "name": "!quote"
+                            },
+                            {
+                                "description": "<URL> Displays an image from the provided URL in the chat",
+                                "name": "!img"
+                            },
+                            {
+                                "description": "Returns amout of ping",
+                                "name": "!ping"
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                id: 'stats',
+                title: 'Server Statistics',
+                description: 'Provides general statistics about the chat: total unique users, number of online users, and total messages sent.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart-2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>`,
+                details: {
+                    endpoint: '/api/stats',
+                    method: 'GET',
+                    response: {
+                        "online_users": 1,
+                        "total_messages": 12,
+                        "unique_users": 2
+                    }
+                }
+            },
+            {
+                id: 'about',
+                title: 'About the Project',
+                description: 'Returns metadata about the chat application such as name, version, description, author, and license information.',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+                details: {
+                    endpoint: '/api/about',
+                    method: 'GET',
+                    response: {
+                        "author": "McDjXdLol",
+                        "description": "A simple chat application with a bot.",
+                        "license": "MIT",
+                        "name": "Chat Web",
+                        "version": "1.0.0-iguess"
+                    }
+                }
+            }
+        ];
+
+        function renderApiList() {
+            const listContainer = document.getElementById('api-list');
+            listContainer.innerHTML = apis.map(api => `
+                <button
+                    id="btn-${api.id}"
+                    data-api-id="${api.id}"
+                    class="api-link api-card flex items-center space-x-2 text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <div class="w-6 h-6 text-blue-400 flex-shrink-0">
+                        ${api.icon}
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-200">${api.title}</h3>
+                        <p class="text-xs text-gray-400">${api.description}</p>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function renderApiDetails(api) {
+            const detailsContainer = document.getElementById('api-details-container');
+            if (!api) {
+                detailsContainer.innerHTML = `
+                    <div id="api-details-placeholder" class="flex items-center justify-center api-details-panel h-full">
+                        <p class="text-gray-500 text-xl font-semibold">
+                            Select an API from the left to view details.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            detailsContainer.innerHTML = `
+                <div class="api-details-panel h-full space-y-6">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <span class="w-10 h-10 text-blue-400 flex-shrink-0">${api.icon}</span>
+                        <div>
+                            <h2 class="text-3xl font-extrabold text-blue-400">${api.title}</h2>
+                            <p class="text-md text-gray-300">${api.description}</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h4 class="text-xl font-semibold text-gray-200 mb-2">Endpoint</h4>
+                        <code class="bg-gray-900 text-green-400 p-3 rounded-lg block overflow-x-auto whitespace-pre-wrap text-left flex items-center">
+                            <span class="text-yellow-400 font-bold">${api.details.method} </span> <span class="flex-1">${api.details.endpoint}</span>
+                        </code>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <h4 class="text-xl font-semibold text-gray-200 mb-2">Example Response</h4>
+                        <pre class="bg-gray-900 text-gray-300 p-3 rounded-lg overflow-x-auto text-sm">
+<code>${JSON.stringify(api.details.response, null, 2)}</code>
+                        </pre>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApiList();
+            renderApiDetails(null);
+
+            const listContainer = document.getElementById('api-list');
+            listContainer.addEventListener('click', (event) => {
+                const button = event.target.closest('button');
+                if (button) {
+                    const apiId = button.dataset.apiId;
+                    const selectedApi = apis.find(api => api.id === apiId);
+                    if (selectedApi) {
+                        document.querySelectorAll('.api-link').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        renderApiDetails(selectedApi);
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
