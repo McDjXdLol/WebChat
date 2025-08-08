@@ -11,7 +11,19 @@ A simple yet modern real-time LAN chat application with a Flask backend and a we
 - Basic bot integration to respond to commands
 - Stylish UI built with Tailwind CSS and custom design
 - Username and user color passed via URL parameters
+- Browser notifications for new messages
+- Custom emoji picker with a large selection of emojis
+- User avatars loaded dynamically from API
 - Backend powered by Flask and Flask-SocketIO
+
+## Recent Improvements
+
+- **Code refactoring:** Main application logic split into smaller, well-organized modules using Flask Blueprints for routes (`routes/pages.py`, `routes/api.py`) and socket events (`sockets/events.py`), improving maintainability and readability.
+- **Expanded API endpoints:** Added `/api/about`, `/api/stats/`, and `/api/bot_commands` to expose more application information and stats.
+- **Enhanced frontend:** Fixed avatar color synchronization, improved sidebar info display, and disabled autocompletion to improve UX.
+- **Notifications & emojis:** Implemented browser notifications for new chat messages and integrated a custom emoji popup for richer messaging experience.
+- **Improved bot commands:** Better handling of commands like `!time` and `!img` for more reliable responses.
+- **Folder structure reorganization:** Clear separation of concerns with dedicated folders for routes, models (including global state), sockets, and templates.
 
 ## Live Demo
 
@@ -28,9 +40,9 @@ Try it out right now on [https://chat-web-o1z1.onrender.com/](https://chat-web-o
 ## Notes
 
 - The chat supports a simple bot that responds to some commands (e.g., `!ping`, `!time`, `!info`).
-- The frontend is (kinda) a single HTML page leveraging Socket.IO for communication.
 - Usernames and colors can be customized via URL query parameters.
 - Typing notifications keep everyone aware when someone is composing a message.
+- The frontend is a single-page app leveraging Socket.IO for real-time communication.
 
 ## Tech Stack
 
