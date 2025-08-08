@@ -25,10 +25,6 @@ A simple yet modern real-time LAN chat application with a Flask backend and a we
 - **Improved bot commands:** Better handling of commands like `!time` and `!img` for more reliable responses.
 - **Folder structure reorganization:** Clear separation of concerns with dedicated folders for routes, models (including global state), sockets, and templates.
 
-## Live Demo
-
-Try it out right now on [https://chat-web-o1z1.onrender.com/](https://chat-web-o1z1.onrender.com/) — no registration needed!
-
 ## How to Use
 
 1. Clone this repo
