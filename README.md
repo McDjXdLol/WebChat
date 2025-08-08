@@ -42,7 +42,7 @@ Chat from your browser — no account, no cloud, just LAN.
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/WebChat.git
+git clone https://github.com/McDjXdLol/WebChat.git
 cd WebChat
 
 # Install dependencies
