@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Chat web</title>
+    <title>APIs - Chat web</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,28 +31,42 @@
 
     <div class="bg-[#161b22] rounded-2xl shadow-xl p-8 md:p-12 text-center max-w-2xl mx-auto border border-[#30363d]">
 
-        <h1 class="text-4xl md:text-5xl font-extrabold text-[#58a6ff] mb-4">Chat web</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-[#58a6ff] mb-4">API Gateway</h1>
         <p class="text-lg md:text-xl font-medium text-gray-300 mb-8">
-            A simple, fast, and anonymous text chat for anyone who has something to say.
+            Choose your destination, champ!
         </p>
 
-        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <a href="login" class="flex-1 api-link">
+        <div class="flex flex-col space-y-4">
+            <a href="api/messages_history" class="api-link">
                 <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
                            hover:bg-[#30363d] transition-colors duration-300">
-                    Start Chatting!
+                    Message History
                 </button>
             </a>
-            <a href="about" class="flex-1 api-link">
+            <a href="api/users_online" class="api-link">
                 <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
                            hover:bg-[#30363d] transition-colors duration-300">
-                    About
+                    Users Online
                 </button>
             </a>
-            <a href="/api" class="flex-1 api-link">
+            
+            <a href="api/unique_users" class="api-link">
                 <button class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
                            hover:bg-[#30363d] transition-colors duration-300">
-                    APIs
+                    Unique Users
+                </button>
+            </a>
+            <a href="/" class="api-link">
+                <button
+                    class="w-full bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-8 rounded-xl border border-[#30363d] shadow-lg
+                           hover:bg-[#30363d] transition-colors duration-300 flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-home">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    <span>Back to Home</span>
                 </button>
             </a>
         </div>

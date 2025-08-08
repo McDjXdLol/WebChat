@@ -2,11 +2,11 @@
 <html lang="pl">
 
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat - Chat web</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon"/>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -45,108 +45,110 @@
 </head>
 
 <body class="flex items-center justify-center min-h-screen p-4 pb-20">
-<div class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto border border-[#30363d] flex h-[88vh]">
-    <div class="flex flex-col flex-grow mr-4">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
-            <div class="flex items-center space-x-2 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="lucide lucide-users-2 text-[#c9d1d9]">
-                    <path d="M14 19a6 6 0 0 0-12 0"/>
-                    <circle cx="8" cy="9" r="4"/>
-                    <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6"/>
-                    <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                </svg>
-                <span id="online-users-count" class="font-bold text-lg">0</span>
+    <div
+        class="bg-[#161b22] rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-6xl mx-auto border border-[#30363d] flex h-[88vh]">
+        <div class="flex flex-col flex-grow mr-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-[#58a6ff]">Welcome, <span id="user"></span>!</h2>
+                <div class="flex items-center space-x-2 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-users-2 text-[#c9d1d9]">
+                        <path d="M14 19a6 6 0 0 0-12 0" />
+                        <circle cx="8" cy="9" r="4" />
+                        <path d="M22 19a6 6 0 0 0-6-6 6 6 0 0 0-6 6" />
+                        <path d="M16 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    </svg>
+                    <span id="online-users-count" class="font-bold text-lg">0</span>
+                </div>
+
             </div>
 
-        </div>
+            <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]">
+            </div>
 
-        <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]">
-        </div>
+            <div id="typing-indicator" class="text-sm text-gray-400 mt-2" style="display:block;">‎ </div>
 
-         <div id="typing-indicator" class="text-sm text-gray-400 mt-2" style="display:block;">‎ </div>
-
-        <div class="flex items-center space-x-2">
-            <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
-                   class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
-            <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
+            <div class="flex items-center space-x-2">
+                <input id="input" placeholder="Wpisz wiadomość..." autocomplete="off"
+                    class="flex-grow bg-[#21262d] text-[#c9d1d9] border border-[#30363d] rounded-xl p-3 focus:outline-none focus:border-[#58a6ff]">
+                <button id="send" class="bg-[#21262d] text-[#c9d1d9] font-bold py-3 px-6 rounded-xl border border-[#30363d] shadow-lg
                            hover:bg-[#30363d] transition-colors duration-300">
-                Send
-            </button>
+                    Send
+                </button>
 
 
+            </div>
+        </div>
+
+        <div class="w-64 flex-shrink-0 flex flex-col bg-[#161b22] rounded-xl border border-[#30363d] p-4">
+            <h3 class="text-xl font-bold text-[#c9d1d9] mb-4">Online Users</h3>
+            <div id="users-list-container" class="flex-grow overflow-y-auto">
+                <ul id="online-users-list" class="space-y-2">
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="w-64 flex-shrink-0 flex flex-col bg-[#161b22] rounded-xl border border-[#30363d] p-4">
-        <h3 class="text-xl font-bold text-[#c9d1d9] mb-4">Online Users</h3>
-        <div id="users-list-container" class="flex-grow overflow-y-auto">
-            <ul id="online-users-list" class="space-y-2">
-            </ul>
-        </div>
-    </div>
-</div>
-
-<footer class="fixed bottom-0 w-full p-4 bg-[#161b22] text-[#c9d1d9] flex justify-center items-center rounded-t-2xl border-t border-[#30363d] shadow-2xl">
-    <a href="{{ url_for('about') }}" class="text-sm">About</a>
-</footer>
+    <footer
+        class="fixed bottom-0 w-full p-4 bg-[#161b22] text-[#c9d1d9] flex justify-center items-center rounded-t-2xl border-t border-[#30363d] shadow-2xl">
+        <a href="{{ url_for('about') }}" target="_blank" class="text-sm">About</a>
+    </footer>
 </body>
 <script>
     const chat = document.getElementById('chat');
-const input = document.getElementById('input');
-const sendBtn = document.getElementById('send');
-const userSpan = document.getElementById('user');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const userSpan = document.getElementById('user');
 
-const urlParams = new URLSearchParams(window.location.search);
-const username = urlParams.get('username') || 'anonim';
-const usercolor = urlParams.get('color') || '#c9d1d9';
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username') || 'anonim';
+    const usercolor = urlParams.get('color') || '#c9d1d9';
 
-userSpan.innerText = username;
-userSpan.style.color = usercolor;
+    userSpan.innerText = username;
+    userSpan.style.color = usercolor;
 
-input.addEventListener('keydown', (e) => {
-    if (e.key === "Enter") {
-        socket.emit('user_typing', {
-            username: username,
-            color: usercolor,
-            done: true
-        });
-        sendBtn.click();
-    } else {
-        socket.emit('user_typing', {
-            username: username,
-            color: usercolor,
-            done: false
-        });
-    }
-});
+    input.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+            socket.emit('user_typing', {
+                username: username,
+                color: usercolor,
+                done: true
+            });
+            sendBtn.click();
+        } else {
+            socket.emit('user_typing', {
+                username: username,
+                color: usercolor,
+                done: false
+            });
+        }
+    });
 
     const socket = io();
 
     let pingStart = null;
 
-socket.on('show_typing', (data) => {
-    const typingIndicator = document.getElementById('typing-indicator');
-    if (!data.done) {
-        typingIndicator.innerText = `${data.username} is typing...`;
-        typingIndicator.style.display = 'block';
-    } else {
-        typingIndicator.style.display = 'none';
-    }
-});
-
-
-
-function sendPing() {
-    pingStart = Date.now();
-    socket.emit('send_message', {
-        username: username,
-        color: usercolor,
-        text: "!ping"
+    socket.on('show_typing', (data) => {
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (!data.done) {
+            typingIndicator.innerText = `${data.username} is typing...`;
+            typingIndicator.style.display = 'block';
+        } else {
+            typingIndicator.style.display = 'none';
+        }
     });
-}
+
+
+
+    function sendPing() {
+        pingStart = Date.now();
+        socket.emit('send_message', {
+            username: username,
+            color: usercolor,
+            text: "!ping"
+        });
+    }
 
     socket.on('connect', () => {
         socket.emit('register_user', {
@@ -210,13 +212,13 @@ function sendPing() {
 
                 const avatar = document.createElement('div');
                 avatar.classList.add('w-6', 'h-6', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-xs', 'flex-shrink-0');
-                const userColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                const userColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
                 avatar.style.backgroundColor = userColor;
                 avatar.innerText = user.charAt(0).toUpperCase();
 
                 const usernameSpan = document.createElement('span');
                 usernameSpan.classList.add('font-medium', 'text-sm');
-                if (user == username){
+                if (user == username) {
                     usernameSpan.innerText = user + " (You)";
                 } else {
                     usernameSpan.innerText = user;
@@ -280,16 +282,24 @@ function sendPing() {
 
         const messageText = document.createElement('p');
         messageText.classList.add('text-sm');
-        if (data.text.startsWith("<img")) {
+        if (data.text.startsWith("<img src=")) {
             messageText.innerHTML = data.text;
-        } else if (data.text.startsWith("<ping>")) {
+        }
+
+        else if (data.text == "<ping>") {
             const latency = Date.now() - pingStart;
             messageText.innerText = `Pong! ${latency}ms`;
         }
 
-        else if(data.text.startsWith("<time>")){
+        else if (data.text == "<time>") {
             const clientTime = new Date();
-            messageText.innerText = clientTime.getHours().toString() + ":" + clientTime.getMinutes().toString() + ":"+clientTime.getSeconds().toString()
+            var hours = clientTime.getHours();
+            var minutes = clientTime.getMinutes();
+            var seconds = clientTime.getSeconds();
+            if (hours < 10) hours = "0" + hours;
+            if (minutes < 10) minutes = "0" + minutes;
+            if (seconds < 10) seconds = "0" + seconds;
+            messageText.innerText = hours + ":" + minutes + ":" + seconds;
         }
         else {
             messageText.innerText = data.text;

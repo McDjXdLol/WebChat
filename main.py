@@ -15,6 +15,9 @@ connected_users = {}  # {nickname: sid}
 sid_to_nickname = {}  # {sid: nickname}
 messages = []  # [{"datetime": "{datetime}","message": "{msg}","username": "{nick}}"}]
 
+unique_users = set()  # Set to track unique users
+unique_users_count = 0  # Counter for unique users
+
 bot = Bot()
 
 
@@ -22,10 +25,20 @@ bot = Bot()
 def home():
     return render_template("index.html")
 
+@app.route('/api')
+def api():
+    return render_template("api.html")
 
 @app.route('/api/messages_history')
 def messages_history():
     return jsonify(messages)
+
+@app.route('/api/unique_users')
+def unique_users_count_api():
+    if unique_users is None or len(unique_users) == 0:
+        return jsonify({"unique_users": [], "amount": 0})
+    uniq_users_list = sorted(list(unique_users))
+    return jsonify({"unique_users": uniq_users_list, "amount": unique_users_count})
 
 
 @app.route('/api/users_online')
@@ -82,12 +95,16 @@ def handle_register(data):
     if username in online_users:
         emit('nickname_taken')
         return
+    if not username in unique_users:
+        global unique_users_count
+        unique_users.add(username)
+        unique_users_count += 1
+        print(f"New Unique user: {username}! Total unique users: {unique_users_count}")
     online_users.add(username)
     sid_to_nickname[sid] = username
 
     emit('registration_successful')
 
-    # Wyślij aktualizację listy online do wszystkich klientów
     emit('update_users_online', {'users': list(online_users)}, broadcast=True)
 
 
@@ -99,7 +116,6 @@ def handle_disconnect():
         online_users.discard(username)
         del sid_to_nickname[sid]
 
-        # Aktualizuj listę u wszystkich klientów
         emit('update_users_online', {'users': list(online_users)}, broadcast=True)
 
 
