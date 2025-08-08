@@ -135,6 +135,16 @@
             </div>
 
             <div id="chat" class="flex-grow p-4 mb-4 rounded-xl border border-[#30363d] space-y-4 bg-[#0d1117]">
+                <div class="flex items-start space-x-3 p-3 bg-[#21262d] rounded-xl">
+                    <img class="w-8 h-8 rounded-full object-cover flex-shrink-0" src="/static/images/info.png"
+                        alt="Info icon">
+                    <div>
+                        <div class="flex items-center mb-1 space-x-2">
+                            <span class="font-bold text-sm text-[#ff0000]">INFO</span>
+                        </div>
+                        <p class="text-sm">Type !info for more information.</p>
+                    </div>
+                </div>
             </div>
 
             <div id="typing-indicator" class="text-sm text-gray-400 mt-2" style="display:block;">‎ </div>
@@ -313,51 +323,10 @@
 
     socket.on('connect', () => {
         socket.emit('register_user', {
-            username: "{{ username }}"
+            username: username,
+            color: usercolor
         });
         socket.emit('user_count');
-
-
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('flex', 'items-start', 'space-x-3');
-
-        const avatar = document.createElement('img');
-        avatar.classList.add('w-8', 'h-8', 'rounded-full', 'object-cover', 'flex-shrink-0');
-        avatar.src = '/static/images/info.png';
-        avatar.alt = 'User avatar';
-
-        const messageContent = document.createElement('div');
-        messageContent.classList.add('bg-[#21262d]', 'p-3', 'rounded-xl', 'max-w-xs', 'md:max-w-md', 'break-words');
-
-        const messageHeader = document.createElement('div');
-        messageHeader.classList.add('flex', 'items-center', 'mb-1', 'space-x-2');
-
-        const messageAuthor = document.createElement('span');
-        messageAuthor.classList.add('font-bold', 'text-sm');
-        messageAuthor.innerText = "INFO";
-        messageAuthor.style.color = "#ff0000";
-
-        const messageTime = document.createElement('span');
-        messageTime.classList.add('text-xs', 'text-gray-500');
-        const now = new Date();
-        messageTime.innerText = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-        messageHeader.appendChild(messageAuthor);
-        messageHeader.appendChild(messageTime);
-
-        const messageText = document.createElement('p');
-        messageText.classList.add('text-sm');
-        messageText.innerHTML = "Type !info for more information.";
-
-        messageContent.appendChild(messageHeader);
-        messageContent.appendChild(messageText);
-
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(messageContent);
-
-        chat.appendChild(messageDiv);
-        chat.scrollTop = chat.scrollHeight;
-
     });
 
     socket.on('update_users_online', (data) => {
@@ -367,29 +336,28 @@
         if (data && data.users) {
             onlineUsersSpan.innerText = data.users.length;
             onlineUsersList.innerHTML = '';
-            data.users.forEach(user => {
+            data.users.forEach(userObj => {
                 const listItem = document.createElement('li');
                 listItem.classList.add('flex', 'items-center', 'space-x-2', 'p-2', 'rounded-md', 'bg-[#21262d]');
 
-                const avatar = document.createElement('div');
-                avatar.classList.add('w-6', 'h-6', 'rounded-full', 'flex', 'items-center', 'justify-center', 'font-bold', 'text-white', 'text-xs', 'flex-shrink-0');
-                const userColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
-                avatar.style.backgroundColor = userColor;
-                avatar.innerText = user.charAt(0).toUpperCase();
+                const avatarImg = document.createElement('img');
+                avatarImg.classList.add('w-8', 'h-8', 'rounded-full', 'flex-shrink-0');
+
+                const userColor = userObj.color.replace('#', '');
+
+                avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userObj.username)}&background=${userColor}&color=ffffff&bold=true&format=png`;
 
                 const usernameSpan = document.createElement('span');
                 usernameSpan.classList.add('font-medium', 'text-sm');
-                if (user == username) {
-                    usernameSpan.innerText = user + " (You)";
-                } else {
-                    usernameSpan.innerText = user;
-                }
-                listItem.appendChild(avatar);
+                usernameSpan.innerText = userObj.username === username ? userObj.username + " (You)" : userObj.username;
+
+                listItem.appendChild(avatarImg);
                 listItem.appendChild(usernameSpan);
                 onlineUsersList.appendChild(listItem);
             });
         }
     });
+
 
     socket.on('nickname_taken', () => {
         showModal("Ten nick jest już zajęty. Wybierz inny.");
